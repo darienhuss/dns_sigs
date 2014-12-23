@@ -12,18 +12,3 @@ alert udp $HOME_NET any -> any 53 (msg:"ET DNS Query for google.com (google.com)
 
 usage: dns_sigs.py [-h] [-f FILE] [-d DOMAIN] -m MESSAGE [-r REFERENCE]
                    [-c CLASSTYPE] [-s SID]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -f FILE, --file FILE  File location with domain name list
-  -d DOMAIN, --domain DOMAIN
-                        Single domain name
-  -m MESSAGE, --message MESSAGE
-                        Provide full signature message, domain will be added
-                        to the end
-  -r REFERENCE, --reference REFERENCE
-                        Provide a reference, or list of references separated
-                        by a |
-  -c CLASSTYPE, --classtype CLASSTYPE
-                        Provide signature classtype (default: trojan-activity)
-  -s SID, --sid SID     Provide starting sid number (default: 20000000)
