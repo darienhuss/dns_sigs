@@ -12,3 +12,6 @@ alert udp $HOME_NET any -> any 53 (msg:"ET DNS Query for google.com (google.com)
 
 usage: dns_sigs.py [-h] [-f FILE] [-d DOMAIN] -m MESSAGE [-r REFERENCE]
                    [-c CLASSTYPE] [-s SID]
+
+
+Warning: no error checking
