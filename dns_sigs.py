@@ -32,7 +32,6 @@ def main():
 	signatures = []
 	reference = ''
 	if references:
-
 		reference_re = re.compile('^[a-f0-9]{32}$')
 		references = references.split('|')
 
