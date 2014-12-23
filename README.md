@@ -13,8 +13,6 @@ alert udp $HOME_NET any -> any 53 (msg:"ET DNS Query for google.com (google.com)
 usage: dns_sigs.py [-h] [-f FILE] [-d DOMAIN] -m MESSAGE [-r REFERENCE]
                    [-c CLASSTYPE] [-s SID]
 
-Quickly create Suricata/Snort DNS signatures
-
 optional arguments:
   -h, --help            show this help message and exit
   -f FILE, --file FILE  File location with domain name list
