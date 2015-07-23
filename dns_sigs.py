@@ -15,7 +15,7 @@ def main():
 	parser.add_argument('-f','--file', help='File location with domain name list',required=False,default="")
 	parser.add_argument('-d','--domain', help='Single domain name',required=False,default="")
 	parser.add_argument('-m','--message', help='Provide full signature message, domain will be added to the end',required=True,default="")
-	parser.add_argument('-r','--reference', help='Provide a reference, or list of references separated by a |',required=False,default="")
+	parser.add_argument('-r','--reference', help='Provide a md5 or url reference, or list of references separated by a |',required=False,default="")
 	parser.add_argument('-c','--classtype', help='Provide signature classtype (default: trojan-activity)',required=False,default="trojan-activity")
 	parser.add_argument('-s','--sid', help='Provide starting sid number (default: 20000000)',required=False,default="20000000")
 
@@ -28,15 +28,17 @@ def main():
 	classtype = args.classtype
 	sid = int(args.sid)
 
+	onion_re = re.compile('^[a-z0-9]{16}$')
+
 	domains = []
 	signatures = []
 	reference = ''
 	if references:
-		reference_re = re.compile('^[a-f0-9]{32}$')
+		md5_re = re.compile('^[a-f0-9]{32}$')
 		references = references.split('|')
 
 		for ref in references:
-			if reference_re.search(ref):
+			if md5_re.search(ref):
 				reference += 'reference:md5,%s; ' % ref
 			else:
 				reference += 'reference:url,%s; ' % ref
@@ -50,17 +52,19 @@ def main():
 	for domain in domains:
 		levels = domain.split('.')
 		domain_sig = ''
-		signature_message = '%s (%s)' % (message,domain)
+
+		signature_message = '%s (%s)' % (message,domain) #prints domain in addition to message
 		rule_stub_start = 'alert udp $HOME_NET any -> any 53 (msg:"%s"; content:"|01 00 00 01 00 00 00 00 00 00|"; depth:10; offset:2; content:"' % signature_message
 		rule_stub_end = '"; nocase; distance:0; fast_pattern; %sclasstype:%s; sid:%s; rev:1;)' % (reference,classtype,sid)
 		sid += 1
 		for level in levels:
 			domain_sig += '|%s|%s' % (hex(len(level)).lstrip('0x').zfill(2),level)
-		domain_sig += '|00|'
+		if not onion_re.search(domain):
+			domain_sig += '|00|'
 		signatures.append(rule_stub_start + domain_sig + rule_stub_end)
 
 	for signature in signatures:
-		print signature
+		print '%s\n' % signature
 
 if __name__ == '__main__':
   main()
