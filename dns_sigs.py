@@ -53,7 +53,8 @@ def main():
 		levels = domain.split('.')
 		domain_sig = ''
 
-		signature_message = '%s (%s)' % (message,domain) #prints domain in addition to message
+		#signature_message = '%s (%s)' % (message,domain) #prints domain in addition to message
+		signature_message = message
 		rule_stub_start = 'alert udp $HOME_NET any -> any 53 (msg:"%s"; content:"|01 00 00 01 00 00 00 00 00 00|"; depth:10; offset:2; content:"' % signature_message
 		rule_stub_end = '"; nocase; distance:0; fast_pattern; %sclasstype:%s; sid:%s; rev:1;)' % (reference,classtype,sid)
 		sid += 1
