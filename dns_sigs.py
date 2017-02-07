@@ -29,9 +29,9 @@ def main():
 	sid = int(args.sid)
 
 	onion_re = re.compile('^[a-z0-9]{16}$')
+	skip_re = re.compile('^\s*(#.*)?$')
 
 	domains = []
-	signatures = []
 	reference = ''
 	if references:
 		md5_re = re.compile('^[a-f0-9]{32}$')
@@ -50,6 +50,9 @@ def main():
 		domains.append(single_domain)
 
 	for domain in domains:
+		if skip_re.search(domain):
+			print domain
+			continue
 		levels = domain.split('.')
 		domain_sig = ''
 
@@ -62,10 +65,7 @@ def main():
 			domain_sig += '|%s|%s' % (hex(len(level)).lstrip('0x').zfill(2),level)
 		if not onion_re.search(domain):
 			domain_sig += '|00|'
-		signatures.append(rule_stub_start + domain_sig + rule_stub_end)
-
-	for signature in signatures:
-		print '%s\n' % signature
+		print rule_stub_start + domain_sig + rule_stub_end
 
 if __name__ == '__main__':
   main()
