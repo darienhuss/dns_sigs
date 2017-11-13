@@ -58,14 +58,20 @@ def main():
 
 		#signature_message = '%s (%s)' % (message,domain) #prints domain in addition to message
 		signature_message = message
-		rule_stub_start = 'alert udp $HOME_NET any -> any 53 (msg:"%s"; content:"|01|"; offset:2; depth:1; content:"|00 01 00 00 00 00 00|"; distance:1; within:7; content:"' % signature_message
-		rule_stub_end = '"; nocase; distance:0; fast_pattern; %sclasstype:%s; sid:%s; rev:1;)' % (reference,classtype,sid)
-		sid += 1
+		rule_stub_start_1 = 'alert udp $HOME_NET any -> any 53 (msg:"%s"; content:"|01|"; offset:2; depth:1; content:"|00 01 00 00 00 00 00|"; distance:1; within:7; content:"' % signature_message
+		rule_stub_end_1 = '"; nocase; distance:0; fast_pattern; %sclasstype:%s; sid:%s; rev:1;)' % (reference,classtype,sid)
 		for level in levels:
 			domain_sig += '|%s|%s' % (hex(len(level)).lstrip('0x').zfill(2),level)
 		if not onion_re.search(domain):
 			domain_sig += '|00|'
-		print rule_stub_start + domain_sig + rule_stub_end
+                
+		print "\n#Suricata 3.2+"
+		rule_stub_start_2 = 'alert dns $HOME_NET any -> any any (msg:"%s"; dns_query; content:"' % signature_message
+		rule_stub_end_2 = '"; nocase; isdataat:!1,relative; %sclasstype:%s; sid:%s; rev:1;)' % (reference,classtype,sid)
+		print rule_stub_start_2 + domain + rule_stub_end_2
 
+		print "\n#Suricata 1.3+"
+		print rule_stub_start_1 + domain_sig + rule_stub_end_1 + "\n"	       
+		sid += 1
 if __name__ == '__main__':
   main()
